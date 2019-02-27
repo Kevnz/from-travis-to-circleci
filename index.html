@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Moving from TravisCI to CircleCI</title>
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+  <meta name="description" content="Blog post on how to move from TravisCI to CircleCI" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/github.min.css" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="Moving from TravisCI to CircleCI - Kevin Isom" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="Find out how to move from TravisCI to CircleCI" />
+  <meta property="og:url" content="https://kevinisom.info/from-travis-to-circleci" />
+  <meta property="og:image" content="https://avatars3.githubusercontent.com/u/62547?s=400&amp;v=4" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@kev_nz" />
+  <meta name="twitter:title" content="Moving from TravisCI to CircleCI - Kevin Isom" />
+  <meta name="twitter:description" content="Find out how to move from TravisCI to CircleCI" />
+  <meta name="twitter:image" content="https://avatars3.githubusercontent.com/u/62547?s=400&amp;v=4" />
+
+</head>
+
+<body>
+  <div class="container">
+  <h1 id="moving-from-travisci-to-circleci">Moving From TravisCI To CircleCI</h1>
+<p>With recent happenings with TravisCI</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">So apparently Travis CI is being strip-mined immediately after their acquisition by Idera. Sorry, I mean after &quot;joining the Idera family&quot; 🙄 <a href="https://t.co/CE5ERp1RsY">https://t.co/CE5ERp1RsY</a> A bunch of talented people are waking up to termination letters. Absolutely shameful. <a href="https://t.co/BbBRPdnswe">https://t.co/BbBRPdnswe</a></p>&mdash; Senior Oops Engineer (@ReinH) <a href="https://twitter.com/ReinH/status/1098663375985229825?ref_src=twsrc%5Etfw">February 21, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<h2 id="what-they-provided">What they provided</h2>
+<p>With TravisCI I was able to setup a continuous build and test for my git repositories so every time I pushed I would get at least a test run against multiple versions of node.js just by including a <code>.travis.yml</code> file.</p>
+<pre><code class="hljs yml language-yml"><span class="hljs-attr">language:</span> <span class="hljs-string">node_js</span>
+<span class="hljs-attr">node_js:</span>
+<span class="hljs-bullet">  -</span> <span class="hljs-string">"11"</span>
+<span class="hljs-bullet">  -</span> <span class="hljs-string">"10"</span>
+<span class="hljs-bullet">  -</span> <span class="hljs-string">"8"</span>
+<span class="hljs-bullet">  -</span> <span class="hljs-string">"6"</span></code></pre>
+<p>But just because something is easy doesn't mean that we should accept the negative impact on actual people, so<br />
+I have decided that I no longer want to use their service.</p>
+<h2 id="enter-the-circle">Enter the circle</h2>
+<p>I have used several continuous integration services as well as a number of "roll-your-own" options in the past. Of the services I have used I have found <a href="https://circleci.com/">CircleCI</a> to be my current favourite service. So the decision was made and all that was left was to figure out how to get builds for all of those versions of node. Fortunately CircleCI lets you specify multiple jobs as part of a build and then you can put those jobs in any kind of execution order you want. For my NPM modules, I wanted to spin up multiple versions of node.js, checkout the code, install the dependencies for the module and then run my tests. Additionally I wanted the latest version of node.js (currently version 11) to take the test coverage results and submit them to <a href="https://coveralls.io">coveralls.io</a>.</p>
+<h3 id="step-1">Step 1</h3>
+<p>Go to <a href="https://coveralls.io">Coveralls</a> and setup an account if required and then add the repository you wish to gather coverage results for and get the token for that repository.</p>
+<h3 id="step-2">Step 2</h3>
+<p>Go to <a href="https://circleci.com">CircleCI</a> and setup an account if required and then add the repository you wish to start building.</p>
+<h3 id="step-3">Step 3</h3>
+<p>Add the environment variable <code>COVERALLS_REPO_TOKEN</code> set to the token from <a href="https://coveralls.io">Coveralls</a> (Though your test setup may be different, this covers using NYC or Tap)</p>
+<h3 id="step-4">Step 4</h3>
+<p>Add <code>.circleci/config.yml</code> to the root of your project. That file should look like this:</p>
+<pre><code class="hljs yml language-yml"><span class="hljs-attr">version:</span> <span class="hljs-number">2</span>
+<span class="hljs-attr">jobs:</span>
+<span class="hljs-attr">  "node-11":</span>
+<span class="hljs-attr">    docker:</span>
+<span class="hljs-attr">      - image:</span> <span class="hljs-string">circleci/node:11.9</span>
+<span class="hljs-attr">    working_directory:</span> <span class="hljs-string">~/mydir</span>
+<span class="hljs-attr">    steps:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">checkout</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">install</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">test</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">run</span> <span class="hljs-string">coverage</span>
+<span class="hljs-attr">  "node-10":</span>
+<span class="hljs-attr">    docker:</span>
+<span class="hljs-attr">      - image:</span> <span class="hljs-string">circleci/node:10</span>
+<span class="hljs-attr">    working_directory:</span> <span class="hljs-string">~/mydir</span>
+<span class="hljs-attr">    steps:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">checkout</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">install</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">test</span>
+
+<span class="hljs-attr">  "node-8":</span>
+<span class="hljs-attr">    docker:</span>
+<span class="hljs-attr">      - image:</span> <span class="hljs-string">circleci/node:8</span>
+<span class="hljs-attr">    working_directory:</span> <span class="hljs-string">~/mydir</span>
+<span class="hljs-attr">    steps:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">checkout</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">install</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">test</span>
+
+<span class="hljs-attr">  "node-6":</span>
+<span class="hljs-attr">    docker:</span>
+<span class="hljs-attr">      - image:</span> <span class="hljs-string">circleci/node:6</span>
+<span class="hljs-attr">    working_directory:</span> <span class="hljs-string">~/mydir</span>
+<span class="hljs-attr">    steps:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">checkout</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">install</span>
+<span class="hljs-attr">      - run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">test</span>
+
+<span class="hljs-attr">workflows:</span>
+<span class="hljs-attr">  version:</span> <span class="hljs-number">2</span>
+<span class="hljs-attr">  build:</span>
+<span class="hljs-attr">    jobs:</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">"node-11"</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">"node-10"</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">"node-8"</span>
+<span class="hljs-bullet">      -</span> <span class="hljs-string">"node-6"</span></code></pre>
+<p>This file defines four jobs, one for each version of node.js we want to test on (node-11, node-10, node-8, node-6). Then we define our workflows. In this case we have one workflow that executes all of the jobs in parallel.</p>
+<p>When you push to github you can then check <a href="https://circleci.com/">CircleCI</a> you should see your dashboard and your most recent jobs.</p>
+<p><img src="/CircleCI-App.png" alt="Dashboard" /></p>
+<p>If you then click the build link shown in a job</p>
+<p><img src="/CircleCI-Link.png" alt="Build" /></p>
+<p>It shows that workflow and you can see all the results of the workflow.</p>
+<p><img src="/CircleCI-Workflow.png" alt="workflow" /></p>
+<p>Then you can drill down to each job and see the results from the steps in that job. This includes the setting up the environment, installing the dependencies, running the tests, and the coverage.</p>
+<p><img src="/CircleCI-Tests.png" alt="Tests" /></p>
+<h2 id="taking-it-further">Taking it further</h2>
+<p>With CircleCi workflows you can do so much more than just running tests. You can publish to GitHub pages, deploy the app, build docker images and publish them to docker hub, and so much more. Check out the <a href="https://circleci.com/docs/2.0/workflows/">Docs</a> for more information.</p>
+  </div>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64038939-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-64038939-2');
+</script>
+
+</body>
