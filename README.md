@@ -97,19 +97,19 @@ This file defines four jobs, one for each version of node.js we want to test on 
 
 When you push to github you can then check [CircleCI](https://circleci.com/) you should see your dashboard and your most recent jobs.
 
-![Dashboard](/CircleCI-App.png)
+![Dashboard](/from-travis-to-circleci/CircleCI-App.png)
 
 If you then click the build link shown in a job
 
-![Build](/CircleCI-Link.png)
+![Build](/from-travis-to-circleci/CircleCI-Link.png)
 
 It shows that workflow and you can see all the results of the workflow.
 
-![workflow](/CircleCI-Workflow.png)
+![workflow](/from-travis-to-circleci/CircleCI-Workflow.png)
 
 Then you can drill down to each job and see the results from the steps in that job. This includes the setting up the environment, installing the dependencies, running the tests, and the coverage.
 
-![Tests](/CircleCI-Tests.png)
+![Tests](/from-travis-to-circleci/CircleCI-Tests.png)
 
 ## Taking it further
 
