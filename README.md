@@ -93,4 +93,24 @@ workflows:
       - "node-6"
 ```
 
-This file defines four jobs, one for each version of node.js we want to test on. Then we define our workflows. In this case we have one workflow that executes all of the jobs in parallel.
+This file defines four jobs, one for each version of node.js we want to test on (node-11, node-10, node-8, node-6). Then we define our workflows. In this case we have one workflow that executes all of the jobs in parallel.
+
+When you push to github you can then check [CircleCI](https://circleci.com/) you should see your dashboard and your most recent jobs.
+
+![Dashboard](/CircleCI-App.png)
+
+If you then click the build link shown in a job
+
+![Build](/CircleCI-Link.png)
+
+It shows that workflow and you can see all the results of the workflow.
+
+![workflow](/CircleCI-Workflow.png)
+
+Then you can drill down to each job and see the results from the steps in that job. This includes the setting up the environment, installing the dependencies, running the tests, and the coverage.
+
+![Tests](/CircleCI-Tests.png)
+
+## Taking it further
+
+With CircleCi workflows you can do so much more than just running tests. You can publish to GitHub pages, deploy the app, build docker images and publish them to docker hub, and so much more. Check out the [Docs](https://circleci.com/docs/2.0/workflows/) for more information.
