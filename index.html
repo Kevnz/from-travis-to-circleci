@@ -97,13 +97,13 @@ I have decided that I no longer want to use their service.</p>
 <span class="hljs-bullet">      -</span> <span class="hljs-string">"node-6"</span></code></pre>
 <p>This file defines four jobs, one for each version of node.js we want to test on (node-11, node-10, node-8, node-6). Then we define our workflows. In this case we have one workflow that executes all of the jobs in parallel.</p>
 <p>When you push to github you can then check <a href="https://circleci.com/">CircleCI</a> you should see your dashboard and your most recent jobs.</p>
-<p><img src="/CircleCI-App.png" alt="Dashboard" /></p>
+<p><img src="/from-travis-to-circleci/CircleCI-App.png" alt="Dashboard" /></p>
 <p>If you then click the build link shown in a job</p>
-<p><img src="/CircleCI-Link.png" alt="Build" /></p>
+<p><img src="/from-travis-to-circleci/CircleCI-Link.png" alt="Build" /></p>
 <p>It shows that workflow and you can see all the results of the workflow.</p>
-<p><img src="/CircleCI-Workflow.png" alt="workflow" /></p>
+<p><img src="/from-travis-to-circleci/CircleCI-Workflow.png" alt="workflow" /></p>
 <p>Then you can drill down to each job and see the results from the steps in that job. This includes the setting up the environment, installing the dependencies, running the tests, and the coverage.</p>
-<p><img src="/CircleCI-Tests.png" alt="Tests" /></p>
+<p><img src="/from-travis-to-circleci/CircleCI-Tests.png" alt="Tests" /></p>
 <h2 id="taking-it-further">Taking it further</h2>
 <p>With CircleCi workflows you can do so much more than just running tests. You can publish to GitHub pages, deploy the app, build docker images and publish them to docker hub, and so much more. Check out the <a href="https://circleci.com/docs/2.0/workflows/">Docs</a> for more information.</p>
   </div>
