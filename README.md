@@ -5,6 +5,8 @@ With recent happenings with TravisCI
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">So apparently Travis CI is being strip-mined immediately after their acquisition by Idera. Sorry, I mean after &quot;joining the Idera family&quot; 🙄 <a href="https://t.co/CE5ERp1RsY">https://t.co/CE5ERp1RsY</a> A bunch of talented people are waking up to termination letters. Absolutely shameful. <a href="https://t.co/BbBRPdnswe">https://t.co/BbBRPdnswe</a></p>&mdash; Senior Oops Engineer (@ReinH) <a href="https://twitter.com/ReinH/status/1098663375985229825?ref_src=twsrc%5Etfw">February 21, 2019</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+I have decided to stop using them for any of my projects.
+
 ## What they provided
 
 With TravisCI I was able to setup a continuous build and test for my git repositories so every time I pushed I would get at least a test run against multiple versions of node.js just by including a `.travis.yml` file.
