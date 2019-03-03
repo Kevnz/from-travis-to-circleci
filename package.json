@@ -4,7 +4,8 @@
   "description": "Blog post on how to move from TravisCI to CircleCI",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preblog": "node ./scripts/prepub.js",
+    "blog": "publisher"
   },
   "repository": {
     "type": "git",
